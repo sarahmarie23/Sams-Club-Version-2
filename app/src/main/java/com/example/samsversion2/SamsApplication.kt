@@ -1,14 +1,15 @@
 package com.example.samsversion2
 
 import android.app.Application
-import com.example.samsversion2.data.AppDatabase
-import com.example.samsversion2.data.Item
+import com.example.samsversion2.data.database.AppDatabase
+import com.example.samsversion2.data.model.Item
 import com.example.samsversion2.data.repository.ItemRepository
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 
+@HiltAndroidApp
 class SamsApplication : Application() {
     val database by lazy { AppDatabase.getInstance(this) }
     val repository by lazy { ItemRepository(database.itemDao()) }

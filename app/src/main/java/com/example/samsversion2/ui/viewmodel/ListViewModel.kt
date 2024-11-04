@@ -1,18 +1,20 @@
-package com.example.samsversion2.ui
+package com.example.samsversion2.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.samsversion2.data.Item
+import com.example.samsversion2.data.model.Item
 import com.example.samsversion2.data.repository.ItemRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ItemViewModel(private val repository: ItemRepository) : ViewModel() {
+@HiltViewModel
+class ListViewModel @Inject constructor(
+    private val repository: ItemRepository
+) : ViewModel() {
 
     val allItems: LiveData<List<Item>> = repository.allItems.asLiveData()
 
@@ -30,8 +32,8 @@ class ItemViewModel(private val repository: ItemRepository) : ViewModel() {
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(ItemViewModel::class.java)) {
-                    return ItemViewModel(repository) as T
+                if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
+                    return ListViewModel(repository) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }

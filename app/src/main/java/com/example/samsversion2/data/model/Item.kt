@@ -1,5 +1,6 @@
-package com.example.samsversion2.data
+package com.example.samsversion2.data.model
 
+import androidx.annotation.DrawableRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -8,7 +9,7 @@ data class Item(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val itemName: String,
     val itemNumber: String,
-    val imageUrl: Int,
+    @DrawableRes val imageUrl: Int,
     val inStock: Boolean = true // Add more fields as needed
 )
 

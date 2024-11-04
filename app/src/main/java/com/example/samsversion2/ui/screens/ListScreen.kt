@@ -1,5 +1,6 @@
-package com.example.samsversion2.ui
+package com.example.samsversion2.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,11 +23,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
-import com.example.samsversion2.data.Item
+import androidx.navigation.NavHostController
+import com.example.samsversion2.R
+import com.example.samsversion2.data.model.Item
+import com.example.samsversion2.ui.viewmodel.ListViewModel
 
 @Composable
-fun ListScreen(viewModel: ItemViewModel) {
+fun ListScreen(navController: NavHostController, viewModel: ListViewModel) {
     val items by viewModel.allItems.observeAsState(emptyList())
 
     ItemList(items = items)
@@ -39,13 +42,11 @@ fun ItemRow(item: Item) {
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        item.imageUrl.let { imageUrl ->
-            Image(
-                painter = painterResource(id = imageUrl),
-                contentDescription = null,
-                modifier = Modifier.size(64.dp)
-            )
-        }
+        Image(
+            painter = painterResource(id = item.imageUrl),
+            contentDescription = null,
+            modifier = Modifier.size(64.dp)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(text = item.itemName, fontSize = 18.sp, fontWeight = FontWeight.Bold)

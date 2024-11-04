@@ -1,17 +1,17 @@
-package com.example.samsversion2.data
+package com.example.samsversion2.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.samsversion2.R
+import com.example.samsversion2.data.model.Item
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Item::class], version = 2)
+@Database(entities = [Item::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun itemDao(): ItemDao
 
@@ -24,10 +24,10 @@ abstract class AppDatabase : RoomDatabase() {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "item_table"
+                    "inventory_db"
                 )
                     .fallbackToDestructiveMigration()
-                    .addCallback(object : RoomDatabase.Callback() {
+                    .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
                             // Populate the database here

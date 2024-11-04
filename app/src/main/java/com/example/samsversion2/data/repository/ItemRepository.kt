@@ -1,8 +1,7 @@
 package com.example.samsversion2.data.repository
 
-import androidx.lifecycle.LiveData
-import com.example.samsversion2.data.Item
-import com.example.samsversion2.data.ItemDao
+import com.example.samsversion2.data.model.Item
+import com.example.samsversion2.data.database.ItemDao
 import kotlinx.coroutines.flow.Flow
 
 class ItemRepository(private val itemDao: ItemDao) {

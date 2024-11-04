@@ -1,11 +1,11 @@
-package com.example.samsversion2.data
+package com.example.samsversion2.data.database
 
-import com.example.samsversion2.data.Item
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.samsversion2.data.model.Item
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,6 +24,4 @@ interface ItemDao {
 
     @Delete
     suspend fun deleteItem(item: Item)
-
-
 }
