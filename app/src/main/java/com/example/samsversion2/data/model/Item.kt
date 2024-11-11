@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "item_table")
 data class Item(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val itemId: Long = 0,
     val itemName: String,
     val itemNumber: String,
     @DrawableRes val imageUrl: Int,
-    val inStock: Boolean = true // Add more fields as needed
+    val inStock: Boolean = true
 )
 

@@ -30,13 +30,16 @@ import com.example.samsversion2.ui.viewmodel.ListViewModel
 
 @Composable
 fun ListScreen(navController: NavHostController, viewModel: ListViewModel) {
-    val items by viewModel.allItems.observeAsState(emptyList())
+    val items by viewModel.defaultListItems.observeAsState(emptyList())
+    Log.d("ListScreen", "listscreen is being triggered")
 
     ItemList(items = items)
 }
 
 @Composable
 fun ItemRow(item: Item) {
+    Log.d("ListScreen", "itemrow is being triggered")
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,12 +60,16 @@ fun ItemRow(item: Item) {
 
 @Composable
 fun ItemList(items: List<Item>, modifier: Modifier = Modifier) {
+    Log.d("listscreen", "itemlist is being triggered and size is ${items.size}")
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items) { item ->
+            Log.d("listscreen", "${item.itemName} is being triggered")
+
             ItemRow(item)
         }
     }

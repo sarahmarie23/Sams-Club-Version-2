@@ -23,5 +23,8 @@ fun MenuScreen(navController: NavController) {
         Button(onClick = { navController.navigate("calculator") }) {
             Text("Go to Calculator Screen")
         }
+        Button(onClick = { navController.navigate("addItem")}) {
+            Text("Add Item to List")
+        }
     }
 }

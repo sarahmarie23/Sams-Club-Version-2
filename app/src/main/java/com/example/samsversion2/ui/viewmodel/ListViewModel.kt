@@ -1,5 +1,6 @@
 package com.example.samsversion2.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,28 +17,33 @@ class ListViewModel @Inject constructor(
     private val repository: ItemRepository
 ) : ViewModel() {
 
-    val allItems: LiveData<List<Item>> = repository.allItems.asLiveData()
-
-    fun addItem(item: Item) = viewModelScope.launch {
-        repository.insertItem(item)
+    init {
+        viewModelScope.launch {
+            repository.ensureDefaultListExists()
+        }
     }
 
-    fun deleteItem(item: Item) = viewModelScope.launch {
-        repository.deleteItem(item)
-    }
-
-    companion object {
-        fun provideFactory(
-            repository: ItemRepository
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
-                    return ListViewModel(repository) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
+    val defaultListItems: LiveData<List<Item>> = repository.getItemsForList(1).also {
+        it.observeForever { items ->
+            if (items != null) {
+                Log.d("ListViewModel", "Fetched ${items.size} items for default list.")
             }
         }
+    }
 
+    val allItems: LiveData<List<Item>> = repository.allItems.also {
+        it.observeForever { items ->
+            Log.d("ListViewModel", "Fetched ${items.size} items in total.")
+        }
+    }
+    /* fix later
+        fun addItem(item: Item) = viewModelScope.launch {
+            Log.d("ListViewModel", "Inserting item: ${item.itemName}")
+            repository.insertItem(item)
+        }
+*/
+    fun deleteItem(item: Item) = viewModelScope.launch {
+        Log.d("ListViewModel", "Deleting item: ${item.itemName}")
+        repository.deleteItem(item)
     }
 }

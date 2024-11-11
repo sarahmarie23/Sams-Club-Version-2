@@ -1,6 +1,8 @@
 package com.example.samsversion2
 
 import android.app.Application
+import android.content.Context
+import android.util.Log
 import com.example.samsversion2.data.database.AppDatabase
 import com.example.samsversion2.data.model.Item
 import com.example.samsversion2.data.repository.ItemRepository
@@ -8,22 +10,25 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 @HiltAndroidApp
 class SamsApplication : Application() {
-    val database by lazy { AppDatabase.getInstance(this) }
-    val repository by lazy { ItemRepository(database.itemDao()) }
+    private val database by lazy { AppDatabase.getInstance(this) }
+    private val itemRepository by lazy { ItemRepository(database.itemDao()) }
+    private val sharedPrefs by lazy { getSharedPreferences("app_prefs", Context.MODE_PRIVATE)}
 
     override fun onCreate() {
         super.onCreate()
-        CoroutineScope(Dispatchers.IO).launch {
-            if (repository.isEmpty()) {
-                val sampleItems = listOf(
-                    Item(id = 1, itemName = "Sample Item 1", itemNumber = "001", imageUrl = R.drawable.avocados),
-                    Item(id = 2, itemName = "Sample Item 2", itemNumber = "002", imageUrl = R.drawable.bananas),
-
-                )
-                repository.insertAll(sampleItems) // Insert initial items
+        initializeDataIfNeeded()
+    }
+    private fun initializeDataIfNeeded() {
+        val isDataInitialized = sharedPrefs.getBoolean("data_initialized", false)
+        if (!isDataInitialized) {
+            CoroutineScope(Dispatchers.IO).launch {
+                Log.d("SamsApplication", "onCreate: Initializing data")
+                itemRepository.initializeData()
+                sharedPrefs.edit().putBoolean("data_initialized", true).apply()
             }
         }
     }

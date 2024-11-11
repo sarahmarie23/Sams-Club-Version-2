@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.samsversion2.ui.screens.AddItemScreen
 import com.example.samsversion2.ui.viewmodel.ListViewModel
 import com.example.samsversion2.ui.screens.ListScreen
 import com.example.samsversion2.ui.screens.MenuScreen
@@ -24,6 +25,9 @@ fun NavigationHost(navController: NavHostController = rememberNavController()) {
         }
         composable("calculator") {
             RenewalEstimatorScreen(navController)
+        }
+        composable("addItem") {
+            AddItemScreen(navController)
         }
     }
 }
