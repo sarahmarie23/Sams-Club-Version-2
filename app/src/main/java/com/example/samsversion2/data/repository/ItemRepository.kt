@@ -130,7 +130,7 @@ class ItemRepository(private val itemDao: ItemDao) {
         Log.d("DatabaseInit", "Inserting items into the database")
 
         itemDao.insertAll(items)
-        val insertedItemIds = itemDao.insertItem(items)
+        val insertedItemIds = itemDao.insertItemsFromList(items)
         insertedItemIds.forEachIndexed { index, itemId ->
             itemDao.insertListItemCrossRef(
                 ListItemCrossRef(listId = defaultListId, itemId = itemId)
@@ -158,7 +158,20 @@ class ItemRepository(private val itemDao: ItemDao) {
         }
     }
 
-    suspend fun deleteItem(item: Item) {
-        itemDao.deleteItem(item)
+    suspend fun insertItem(item: Item): Long {
+        return itemDao.insert(item)
+    }
+
+    suspend fun insertItemToList(listId: Long, itemId: Long) {
+        itemDao.insertListItemCrossRef(ListItemCrossRef(listId = listId, itemId = itemId))
+    }
+
+    suspend fun deleteItem(itemId: Long) {
+        itemDao.deleteItem(itemId)
+        itemDao.deleteCrossRefWithItemId(itemId)
+    }
+
+    suspend fun removeItemFromList(listId: Long, itemId: Long) {
+        itemDao.deleteCrossRef(listId, itemId)
     }
 }

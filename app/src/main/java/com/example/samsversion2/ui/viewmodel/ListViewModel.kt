@@ -42,8 +42,24 @@ class ListViewModel @Inject constructor(
             repository.insertItem(item)
         }
 */
-    fun deleteItem(item: Item) = viewModelScope.launch {
-        Log.d("ListViewModel", "Deleting item: ${item.itemName}")
-        repository.deleteItem(item)
+    fun deleteItem(itemId: Long) = viewModelScope.launch {
+        Log.d("ListViewModel", "Deleting item: ${itemId}")
+        repository.deleteItem(itemId)
+    }
+
+    fun addItemToDefaultList(itemNumber: String, itemName: String, imageUrl: Int) {
+        viewModelScope.launch {
+            val item = Item(
+                itemId = 0, // Auto-generated
+                itemName = itemName,
+                itemNumber = itemNumber,
+                imageUrl = imageUrl // Assuming the URL or resource ID
+            )
+            // Insert item into the repository
+            val insertedItemId = repository.insertItem(item)
+
+            // Assuming 1 is the ID of the Default List
+            repository.insertItemToList(listId = 1, itemId = insertedItemId)
+        }
     }
 }

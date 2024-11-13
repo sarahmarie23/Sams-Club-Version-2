@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -19,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,19 +32,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.samsversion2.R
+import com.example.samsversion2.ui.viewmodel.ListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemScreen(navController: NavHostController) {
+fun AddItemScreen(navController: NavHostController, viewModel: ListViewModel) {
     var itemNumber by remember { mutableStateOf("") }
     var itemName by remember { mutableStateOf("Item name will appear here") }
     var imageUrl by remember { mutableStateOf("") }
-    val testList = arrayOf("Default list1", "Default list2", "Default list3")
+    val testList = arrayOf("Default list", "Default list2", "Default list3")
     var selectedList by remember { mutableStateOf(testList[0]) }
     var expanded by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
-
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -120,17 +121,25 @@ fun AddItemScreen(navController: NavHostController) {
                 Text("Clear")
             }
             Button(onClick = {
-                // Fetch item details from the website based on itemNumber
-                // Update itemName and imageUrl with the fetched data
+                viewModel.addItemToDefaultList(
+                    itemNumber = itemNumber,
+                    itemName = "Default Item Name ", // Placeholder
+                    imageUrl = R.drawable.bacon // Placeholder
+                )
                 Toast.makeText(context, "Item added", Toast.LENGTH_SHORT).show()
+                itemNumber = ""
+                itemName = "Item name will appear here"
+                imageUrl = ""
             }) {
                 Text("Submit")
             }
         }
     }
 }
+/*
 @Preview(showBackground = true)
 @Composable
 fun AddItemScreenPreview() {
-    AddItemScreen(navController = rememberNavController())
+    AddItemScreen(navController = rememberNavController(),)
 }
+ */

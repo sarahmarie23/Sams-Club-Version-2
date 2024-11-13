@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.chaquo.python")
 }
 
 
@@ -23,6 +24,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        ndk {
+            // On Apple silicon, you can omit x86_64.
+            abiFilters += listOf("arm64-v8a", "x86_64")
         }
     }
 
@@ -53,6 +59,18 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.8"
+        pip {
+            install("beautifulsoup4")
+            install("requests")
+        }
+    }
+    productFlavors { }
+    sourceSets { }
 }
 
 dependencies {

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Embedded
+import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.Junction
 import androidx.room.OnConflictStrategy
@@ -14,7 +15,6 @@ import androidx.room.Transaction
 import com.example.samsversion2.data.model.Item
 import com.example.samsversion2.data.model.ListEntity
 import com.example.samsversion2.data.model.ListItemCrossRef
-import kotlinx.coroutines.flow.Flow
 
 @RewriteQueriesToDropUnusedColumns
 @Dao
@@ -52,10 +52,20 @@ interface ItemDao {
     suspend fun getItemCountForList(listId: Long): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertItem(items: List<Item>): List<Long>
+    suspend fun insert(item: Item): Long
 
-    @Delete
-    suspend fun deleteItem(item: Item)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertItemsFromList(items: List<Item>): List<Long>
+
+    @Query("DELETE FROM item_table WHERE itemId = :itemId")
+    suspend fun deleteItem(itemId: Long)
+
+    @Query("DELETE FROM list_item_cross_ref WHERE itemId = :itemId")
+    suspend fun deleteCrossRefWithItemId(itemId: Long)
+
+    @Query("DELETE FROM list_item_cross_ref WHERE listId = :listId AND itemId = :itemId")
+    suspend fun deleteCrossRef(listId: Long, itemId: Long)
 }
 
 data class ListWithItems(
