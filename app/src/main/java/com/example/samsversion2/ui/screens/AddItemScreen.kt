@@ -1,5 +1,7 @@
 package com.example.samsversion2.ui.screens
 
+import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,9 +34,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.samsversion2.R
 import com.example.samsversion2.ui.viewmodel.ListViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.jsoup.Jsoup
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +56,7 @@ fun AddItemScreen(navController: NavHostController, viewModel: ListViewModel) {
     var expanded by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -101,14 +112,12 @@ fun AddItemScreen(navController: NavHostController, viewModel: ListViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         if (imageUrl.isNotEmpty()) {
-            // do something
+            Text("Image saved successfully!")
         } else {
             Text("Image will appear here")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        Text("Item name")
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -121,18 +130,80 @@ fun AddItemScreen(navController: NavHostController, viewModel: ListViewModel) {
                 Text("Clear")
             }
             Button(onClick = {
-                viewModel.addItemToDefaultList(
-                    itemNumber = itemNumber,
-                    itemName = "Default Item Name ", // Placeholder
-                    imageUrl = R.drawable.bacon // Placeholder
-                )
+                val url = "https://www.samsclub.com/s/$itemNumber"
+                coroutineScope.launch {
+                    Log.d("AddItemScreen", "LAUNCHING")
+                    fetchAndSaveItemData(itemNumber, url, context, viewModel)
+                }
                 Toast.makeText(context, "Item added", Toast.LENGTH_SHORT).show()
-                itemNumber = ""
-                itemName = "Item name will appear here"
-                imageUrl = ""
             }) {
                 Text("Submit")
             }
+        }
+    }
+}
+
+suspend fun fetchAndSaveItemData(itemNumber: String, url: String, context: Context, viewModel: ListViewModel) {
+    Log.d("AddItemScreen", "HERE")
+    withContext(Dispatchers.IO){
+
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        val response0 = client.newCall(request).execute()
+        if (response0.isSuccessful) {
+            Log.d("Network", "Successfully reached the website: ${response0.body?.string()}")
+        } else {
+            Log.e("Network", "Failed to reach the website. Status code: ${response0.code}")
+        }
+
+        try {
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                Log.d("AddItemScreen", "right before html")
+                val html = response.body?.string()
+                val doc = Jsoup.parse(html)
+//                doc.select("li[style='display: none !important;'][picreplacementreplaced='true']").forEach { li ->
+//                    li.empty()
+//                }
+//                Log.d("AddItemScreen", "doc after remove: $doc")
+                val imageUrl =
+                    doc.select("img.sc-pc-image-controller.sc-image-wrapper-full-res.sc-image-wrapper-full-res-loaded")
+                        .attr("src")
+                val itemName =
+                    doc.select("img.sc-pc-image-controller.sc-image-wrapper-full-res.sc-image-wrapper-full-res-loaded")
+                        .attr("alt")
+                Log.d("AddItemScreen", "Image URL: $imageUrl")
+                Log.d("AddItemScreen", "Item Name: $itemName")
+                // Download and save the image
+                val imageFile = File(context.filesDir, "image_$itemNumber.jpg")
+
+                    val validImageUrl = if (!imageUrl.startsWith("http://") && !imageUrl.startsWith("https://")) {
+                        "http://$imageUrl"
+                    } else {
+                        imageUrl
+                    }
+                val imageRequest = Request.Builder().url(validImageUrl).build()
+
+                client.newCall(imageRequest).execute().use { imageResponse ->
+                    val inputStream = imageResponse.body?.byteStream()
+                    FileOutputStream(imageFile).use { outputStream ->
+                        inputStream?.copyTo(outputStream)
+                    }
+                }
+
+                viewModel.addItemToDefaultList(
+                    itemNumber = itemNumber,
+                    itemName = itemName,
+                    imageUrl = imageFile.absolutePath,
+                    isDownloaded = true
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("AddItemScreen", "Error fetching item data")
+            e.printStackTrace()
         }
     }
 }

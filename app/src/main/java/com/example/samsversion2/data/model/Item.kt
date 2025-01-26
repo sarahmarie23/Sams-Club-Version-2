@@ -9,7 +9,8 @@ data class Item(
     @PrimaryKey(autoGenerate = true) val itemId: Long = 0,
     val itemName: String,
     val itemNumber: String,
-    @DrawableRes val imageUrl: Int,
-    val inStock: Boolean = true
+    val imagePath: String,
+    val inStock: Boolean = true,
+    val isDownloaded: Boolean = false
 )
 

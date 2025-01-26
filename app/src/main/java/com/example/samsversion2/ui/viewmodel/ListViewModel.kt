@@ -3,8 +3,6 @@ package com.example.samsversion2.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.samsversion2.data.model.Item
 import com.example.samsversion2.data.repository.ItemRepository
@@ -47,13 +45,14 @@ class ListViewModel @Inject constructor(
         repository.deleteItem(itemId)
     }
 
-    fun addItemToDefaultList(itemNumber: String, itemName: String, imageUrl: Int) {
+    fun addItemToDefaultList(itemNumber: String, itemName: String, imageUrl: String, isDownloaded: Boolean) {
         viewModelScope.launch {
             val item = Item(
                 itemId = 0, // Auto-generated
                 itemName = itemName,
                 itemNumber = itemNumber,
-                imageUrl = imageUrl // Assuming the URL or resource ID
+                imagePath = imageUrl,
+                isDownloaded = true
             )
             // Insert item into the repository
             val insertedItemId = repository.insertItem(item)

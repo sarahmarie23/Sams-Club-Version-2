@@ -24,7 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.samsversion2.R
+import coil.compose.AsyncImagePainter.State.Empty.painter
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.example.samsversion2.data.model.Item
 import com.example.samsversion2.ui.viewmodel.ListViewModel
 
@@ -39,14 +41,15 @@ fun ListScreen(navController: NavHostController, viewModel: ListViewModel) {
 @Composable
 fun ItemRow(item: Item) {
     Log.d("ListScreen", "itemrow is being triggered")
-
+    val imagePath = item.imagePath
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
         Image(
-            painter = painterResource(id = item.imageUrl),
+            painter = if (item.isDownloaded) rememberAsyncImagePainter(imagePath) else painterResource(id = imagePath.toInt()),
+            //painter = painterResource(id = item.imagePath),
             contentDescription = null,
             modifier = Modifier.size(64.dp)
         )

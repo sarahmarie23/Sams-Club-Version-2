@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
-    id("com.chaquo.python")
 }
 
 
@@ -61,18 +60,6 @@ android {
     }
 }
 
-chaquopy {
-    defaultConfig {
-        version = "3.8"
-        pip {
-            install("beautifulsoup4")
-            install("requests")
-        }
-    }
-    productFlavors { }
-    sourceSets { }
-}
-
 dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
@@ -93,6 +80,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.fragment)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.okhttp)
+    implementation(libs.jsoup)
     kapt(libs.hilt.android.compiler)
     ksp(libs.androidx.room.compiler.v261)
     testImplementation(libs.junit)

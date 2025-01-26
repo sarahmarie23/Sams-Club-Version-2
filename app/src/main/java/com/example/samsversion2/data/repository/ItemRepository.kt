@@ -29,102 +29,102 @@ class ItemRepository(private val itemDao: ItemDao) {
             Item(
                 itemName = "Avocados",
                 itemNumber = "622943",
-                imageUrl = R.drawable.avocados
+                imagePath = R.drawable.avocados.toString()
             ),
             Item(
                 itemName = "Bananas",
                 itemNumber = "362153",
-                imageUrl = R.drawable.bananas
+                imagePath = R.drawable.bananas.toString()
             ),
             Item(
                 itemName = "Blackberries",
                 itemNumber = "284479",
-                imageUrl = R.drawable.blackberries
+                imagePath = R.drawable.blackberries.toString()
             ),
             Item(
                 itemName = "Blueberries",
                 itemNumber = "279457 ",
-                imageUrl = R.drawable.blueberries
+                imagePath = R.drawable.blueberries.toString()
             ),
             Item(
                 itemName = "Cantaloupe",
                 itemNumber = "867552",
-                imageUrl = R.drawable.cantaloupe
+                imagePath = R.drawable.cantaloupe.toString()
             ),
             Item(
                 itemName = "Cara cara oranges",
                 itemNumber = "967219",
-                imageUrl = R.drawable.caracaraoranges
+                imagePath = R.drawable.caracaraoranges.toString()
             ),
             Item(
                 itemName = "Clementine mandarins",
                 itemNumber = "457334",
-                imageUrl = R.drawable.clementines
+                imagePath = R.drawable.clementines.toString()
             ),
             Item(
                 itemName = "Green grapes",
                 itemNumber = "725545",
-                imageUrl = R.drawable.greengrapes
+                imagePath = R.drawable.greengrapes.toString()
             ),
             Item(
                 itemName = "Navel oranges",
                 itemNumber = "980167341",
-                imageUrl = R.drawable.redgrapes
+                imagePath = R.drawable.redgrapes.toString()
             ),
             Item(
                 itemName = "Organic bananas",
                 itemNumber = "105832",
-                imageUrl = R.drawable.organicbananas
+                imagePath = R.drawable.organicbananas.toString()
             ),
             Item(
                 itemName = "Organic Gala Apples",
                 itemNumber = "980319308",
-                imageUrl = R.drawable.organicgalaapples
+                imagePath = R.drawable.organicgalaapples.toString()
             ),
             Item(
                 itemName = "Pineapple",
                 itemNumber = "835891",
-                imageUrl = R.drawable.pineapple
+                imagePath = R.drawable.pineapple.toString()
             ),
             Item(
                 itemName = "Raspberries",
                 itemNumber = "33249",
-                imageUrl = R.drawable.raspberries
+                imagePath = R.drawable.raspberries.toString()
             ),
             Item(
                 itemName = "Red grapes",
                 itemNumber = "72553",
-                imageUrl = R.drawable.redgrapes
+                imagePath = R.drawable.redgrapes.toString()
             ),
             Item(
                 itemName = "Strawberries",
                 itemNumber = "749972",
-                imageUrl = R.drawable.strawberries
+                imagePath = R.drawable.strawberries.toString()
             ),
             Item(
                 itemName = "Watermelon",
                 itemNumber = "825216",
-                imageUrl = R.drawable.watermelon
+                imagePath = R.drawable.watermelon.toString()
             ),
             Item(
                 itemName = "Farmer John Bacon ",
                 itemNumber = "980154155",
-                imageUrl = R.drawable.bacon
+                imagePath = R.drawable.bacon.toString()
             ),
             Item(
                 itemName = "Babybel Original",
                 itemNumber = "980156320",
-                imageUrl = R.drawable.babybellight
+                imagePath = R.drawable.babybellight.toString()
             ),
             Item(
                 itemName = "Babybel Light",
                 itemNumber = "980157831",
-                imageUrl = R.drawable.original
+                imagePath = R.drawable.original.toString()
             ),
             Item(
                 itemName = "Ice (20 lbs)",
                 itemNumber = "693656",
-                imageUrl = R.drawable.ice
+                imagePath = R.drawable.ice.toString()
             )
         )
         Log.d("DatabaseInit", "Inserting items into the database")
