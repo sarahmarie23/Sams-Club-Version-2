@@ -1,8 +1,10 @@
 package com.example.samsversion2.ui.screens
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,13 +39,24 @@ import androidx.navigation.NavHostController
 import com.example.samsversion2.ui.viewmodel.ListViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
+import org.openqa.selenium.By
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.WebElement
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeDriverService
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.WebDriverWait
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.time.temporal.ChronoUnit
+import kotlin.time.Duration
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -158,23 +171,30 @@ suspend fun fetchAndSaveItemData(itemNumber: String, url: String, context: Conte
         } else {
             Log.e("Network", "Failed to reach the website. Status code: ${response0.code}")
         }
-
+        Log.d("AddItemScreen", "DELAY BEFORE")
+        delay(java.time.Duration.ofSeconds(1))
+        Log.d("AddItemScreen", "DELAY AFTER")
         try {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
                 Log.d("AddItemScreen", "right before html")
                 val html = response.body?.string()
                 val doc = Jsoup.parse(html)
-//                doc.select("li[style='display: none !important;'][picreplacementreplaced='true']").forEach { li ->
-//                    li.empty()
-//                }
-//                Log.d("AddItemScreen", "doc after remove: $doc")
+                val findLi = doc.select("li:not([class]):not([style]):not([id])")
+                Log.d("AddItemScreen", "findLi before findImage $findLi")
+                val findImage = findLi.select("div[class=sc-pc-medium-desktop-card-canary sc-plp-cards-card]")
+
+                for (element in findImage) {
+                    Log.d("AddItemScreen", "findImage ${element.outerHtml()}")
+                }
                 val imageUrl =
-                    doc.select("img.sc-pc-image-controller.sc-image-wrapper-full-res.sc-image-wrapper-full-res-loaded")
+                    findImage.select("img.sc-pc-image-controller.sc-image-wrapper-full-res.sc-image-wrapper-full-res-loaded")
                         .attr("src")
+
                 val itemName =
-                    doc.select("img.sc-pc-image-controller.sc-image-wrapper-full-res.sc-image-wrapper-full-res-loaded")
+                    findImage.select("img.sc-pc-image-controller.sc-image-wrapper-full-res.sc-image-wrapper-full-res-loaded")
                         .attr("alt")
+
                 Log.d("AddItemScreen", "Image URL: $imageUrl")
                 Log.d("AddItemScreen", "Item Name: $itemName")
                 // Download and save the image
@@ -206,6 +226,8 @@ suspend fun fetchAndSaveItemData(itemNumber: String, url: String, context: Conte
             e.printStackTrace()
         }
     }
+
+
 }
 /*
 @Preview(showBackground = true)

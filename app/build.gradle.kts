@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.samsversion2"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -56,6 +56,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
         }
     }
 }
@@ -82,6 +84,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.okhttp)
     implementation(libs.jsoup)
+    implementation(libs.selenium.java)
     kapt(libs.hilt.android.compiler)
     ksp(libs.androidx.room.compiler.v261)
     testImplementation(libs.junit)
