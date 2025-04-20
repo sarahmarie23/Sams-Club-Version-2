@@ -61,4 +61,8 @@ class ListViewModel @Inject constructor(
             repository.insertItemToList(listId = 1, itemId = insertedItemId)
         }
     }
+
+    suspend fun doesItemExist(itemNumber: String): Boolean {
+        return repository.getItemCount(itemNumber) > 0
+    }
 }

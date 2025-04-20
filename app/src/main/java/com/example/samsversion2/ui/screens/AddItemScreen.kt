@@ -70,6 +70,7 @@ fun AddItemScreen(navController: NavHostController, viewModel: ListViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    var isError = false
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -143,6 +144,13 @@ fun AddItemScreen(navController: NavHostController, viewModel: ListViewModel) {
                 Text("Clear")
             }
             Button(onClick = {
+                coroutineScope.launch {
+                    if (viewModel.doesItemExist(itemNumber)) {
+                        isError = true
+                        Toast.makeText(context, "Item already exists", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
+                }
                 val url = "https://www.samsclub.com/s/$itemNumber"
                 coroutineScope.launch {
                     Log.d("AddItemScreen", "LAUNCHING")

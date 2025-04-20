@@ -45,6 +45,9 @@ interface ItemDao {
     @Query("SELECT COUNT(*) FROM item_table")
     suspend fun getCount(): Int
 
+    @Query("SELECT COUNT(*) FROM item_table WHERE itemNumber = :itemNumber")
+    suspend fun getItemCount(itemNumber: String): Int
+
     @Query("SELECT COUNT(*) FROM list_item_cross_ref")
     suspend fun getCountRef(): Int
 
@@ -53,10 +56,6 @@ interface ItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: Item): Long
-
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertItemsFromList(items: List<Item>): List<Long>
 
     @Query("DELETE FROM item_table WHERE itemId = :itemId")
     suspend fun deleteItem(itemId: Long)

@@ -7,6 +7,8 @@ import com.example.samsversion2.data.model.Item
 import com.example.samsversion2.data.database.ItemDao
 import com.example.samsversion2.data.model.ListEntity
 import com.example.samsversion2.data.model.ListItemCrossRef
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ItemRepository(private val itemDao: ItemDao) {
     val allItems: LiveData<List<Item>> = itemDao.getAllItems()
@@ -129,11 +131,11 @@ class ItemRepository(private val itemDao: ItemDao) {
         )
         Log.d("DatabaseInit", "Inserting items into the database")
 
-        itemDao.insertAll(items)
-        val insertedItemIds = itemDao.insertItemsFromList(items)
-        insertedItemIds.forEachIndexed { index, itemId ->
+        withContext(Dispatchers.IO) { val insertedItemIds = itemDao.insertAll(items) }
+
+        items.forEach { item ->
             itemDao.insertListItemCrossRef(
-                ListItemCrossRef(listId = defaultListId, itemId = itemId)
+                ListItemCrossRef(listId = defaultListId, itemId = item.itemId)
             )
         }
     }
@@ -173,5 +175,9 @@ class ItemRepository(private val itemDao: ItemDao) {
 
     suspend fun removeItemFromList(listId: Long, itemId: Long) {
         itemDao.deleteCrossRef(listId, itemId)
+    }
+
+    suspend fun getItemCount(itemNumber: String): Int {
+        return itemDao.getItemCount(itemNumber)
     }
 }

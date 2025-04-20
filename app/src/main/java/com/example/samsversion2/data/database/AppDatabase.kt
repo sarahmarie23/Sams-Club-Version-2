@@ -16,7 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Item::class, ListEntity::class, ListItemCrossRef::class], version = 9)
+@Database(entities = [Item::class, ListEntity::class, ListItemCrossRef::class], version = 10)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun itemDao(): ItemDao
